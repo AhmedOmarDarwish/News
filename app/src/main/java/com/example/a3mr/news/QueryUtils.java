@@ -18,6 +18,8 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.net.HttpURLConnection.HTTP_OK;
+
 public final class QueryUtils {
     public static final String LOG_TAG = QueryUtils.class.getSimpleName();
 
@@ -80,7 +82,7 @@ public final class QueryUtils {
 
             // If the request was successful (response code 200),
             // then read the input stream and parse the response.
-            if (urlConnection.getResponseCode() == 200) {
+            if (urlConnection.getResponseCode() == HTTP_OK ) {
                 inputStream = urlConnection.getInputStream();
                 jsonResponse = readFromStream( inputStream );
             } else {
@@ -131,9 +133,8 @@ public final class QueryUtils {
             JSONArray results = jsonObject.optJSONArray( "results" );
 
             for (int i = 0; i < results.length(); i++) {
-
                 JSONObject currentNews = results.getJSONObject( i );
-                String firstString = currentNews.getString( "sectionName" );
+                String firstString = currentNews.getString( "sectionName") ;
                 String secondString = currentNews.getString( "webTitle" );
                 String pageURL = currentNews.getString( "webUrl" );
                 news.add( new String[]{firstString, secondString, pageURL} );

@@ -23,10 +23,11 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class MainActivity extends AppCompatActivity implements LoaderCallbacks <List <String[]>> {
 
     private static final String LOG_TAG = MainActivity.class.getName();
-    private static final String USGS_REQUEST_URL = "https://content.guardianapis.com/search?q=debate&tag=politics/politics&from-date=2017-01-01&api-key=e84b8a07-8075-4f16-9180-0ba2fcfbad71";
+    private static final String USGS_REQUEST_URL = "https://content.guardianapis.com/search?tag=politics%2Fpolitics&from-date=2017-01-01&show-tags=contributor&q=debate&api-key=" + BuildConfig.API_Key;
     ListView listView;
     private ArrayAdapter <String[]> adapter;
     private ProgressBar progressBar;
@@ -54,8 +55,8 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks <
                         String[] currentString = newsList.get( position );
                         TextView textView1 = convertView.findViewById( android.R.id.text1 );
                         TextView textView2 = convertView.findViewById( android.R.id.text2 );
-                        textView1.setTextColor( ContextCompat.getColor(getContext(), R.color.colorAccent));
-                        textView2.setTextColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
+                        textView1.setTextColor( ContextCompat.getColor( getContext(), R.color.colorAccent ) );
+                        textView2.setTextColor( ContextCompat.getColor( getContext(), R.color.colorPrimary ) );
                         textView1.setText( currentString[0] );
                         textView2.setText( currentString[1] );
                         return convertView;
@@ -78,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks <
         if (networkInfo != null && networkInfo.isConnected()) {
             getLoaderManager().initLoader( 0, null, this ).forceLoad();
         } else {
-            error.setText( R.string.no_news );
+            error.setText( R.string.no_internet_connection );
             progressBar.setVisibility( View.GONE );
         }
     }

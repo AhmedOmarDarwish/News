@@ -1,8 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">News</string>
-    <string name="no_news">No News found.</string>
+    <string name="no_news">No News available.</string>
     <string name="no_internet_connection">No internet connection.</string>
-    <string name="API_Key">e84b8a07–8075–4f16–9180-0ba2fcfbad71</string>
-    <string name="URL">https://content.guardianapis.com/search?q=debate&amp;tag=politics/politics&amp;from-date=2017-01-01&amp;api-key=</string>
 
 </resources>
