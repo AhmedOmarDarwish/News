@@ -24,11 +24,6 @@ public final class QueryUtils {
     public static final String LOG_TAG = QueryUtils.class.getSimpleName();
 
     public static List <String[]> fetchNewsData(String requestUrl) {
-        try {
-            Thread.sleep( 2000 );
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         // Create URL object
         URL url = createUrl( requestUrl );
 
@@ -134,10 +129,17 @@ public final class QueryUtils {
 
             for (int i = 0; i < results.length(); i++) {
                 JSONObject currentNews = results.getJSONObject( i );
+                String webTitle2="";
                 String firstString = currentNews.getString( "sectionName") ;
                 String secondString = currentNews.getString( "webTitle" );
+                JSONArray tags = currentNews.getJSONArray("tags");
+                if (tags.optJSONObject(0)!= null){
+                    JSONObject tagsObject = tags.getJSONObject(0);
+                    webTitle2 = " ( " + tagsObject.getString("webTitle")+ " ) ";
+                }
+
                 String pageURL = currentNews.getString( "webUrl" );
-                news.add( new String[]{firstString, secondString, pageURL} );
+                news.add( new String[]{firstString+webTitle2, secondString, pageURL} );
             }
 
         } catch (JSONException e) {

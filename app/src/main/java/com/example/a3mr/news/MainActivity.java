@@ -27,7 +27,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements LoaderCallbacks <List <String[]>> {
 
     private static final String LOG_TAG = MainActivity.class.getName();
-    private static final String USGS_REQUEST_URL = "https://content.guardianapis.com/search?tag=politics%2Fpolitics&from-date=2017-01-01&show-tags=contributor&q=debate&api-key=" + BuildConfig.API_Key;
+    private static final String USGS_REQUEST_URL = "https://content.guardianapis.com/search?tag=politics%2Fpolitics&from-date=2017-01-01&page-size=30&show-tags=contributor&q=debate&api-key=" + BuildConfig.API_Key;
     ListView listView;
     private ArrayAdapter <String[]> adapter;
     private ProgressBar progressBar;
