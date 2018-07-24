@@ -1,5 +1,6 @@
 package com.example.a3mr.news;
 
+import android.annotation.SuppressLint;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -15,15 +16,20 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static java.net.HttpURLConnection.HTTP_OK;
 
 public final class QueryUtils {
+
     public static final String LOG_TAG = QueryUtils.class.getSimpleName();
 
     public static List <String[]> fetchNewsData(String requestUrl) {
+
         // Create URL object
         URL url = createUrl( requestUrl );
 
@@ -77,7 +83,7 @@ public final class QueryUtils {
 
             // If the request was successful (response code 200),
             // then read the input stream and parse the response.
-            if (urlConnection.getResponseCode() == HTTP_OK ) {
+            if (urlConnection.getResponseCode() == HTTP_OK) {
                 inputStream = urlConnection.getInputStream();
                 jsonResponse = readFromStream( inputStream );
             } else {
@@ -129,17 +135,23 @@ public final class QueryUtils {
 
             for (int i = 0; i < results.length(); i++) {
                 JSONObject currentNews = results.getJSONObject( i );
-                String webTitle2="";
-                String firstString = currentNews.getString( "sectionName") ;
+                String webTitle2 = "";
+                String firstString = currentNews.getString( "sectionName" );
                 String secondString = currentNews.getString( "webTitle" );
-                JSONArray tags = currentNews.getJSONArray("tags");
-                if (tags.optJSONObject(0)!= null){
-                    JSONObject tagsObject = tags.getJSONObject(0);
-                    webTitle2 = " ( " + tagsObject.getString("webTitle")+ " ) ";
+                String originaldate = currentNews.getString( "webPublicationDate" );
+                String splitdate = null;
+                if (originaldate.contains( "T" )) {
+                    String[] parts = originaldate.split( "T" );
+                    splitdate = parts[0];
                 }
+                JSONArray tags = currentNews.getJSONArray( "tags" );
 
+                if (tags.optJSONObject( 0 ) != null) {
+                    JSONObject tagsObject = tags.getJSONObject( 0 );
+                    webTitle2 = " ( " + tagsObject.getString( "webTitle" ) + " ) ";
+                }
                 String pageURL = currentNews.getString( "webUrl" );
-                news.add( new String[]{firstString+webTitle2, secondString, pageURL} );
+                news.add( new String[]{firstString + (webTitle2 + "\r" + "\"" + splitdate + "\""), secondString, pageURL} );
             }
 
         } catch (JSONException e) {
@@ -148,6 +160,7 @@ public final class QueryUtils {
 
         return news;
     }
+
 
 }
 

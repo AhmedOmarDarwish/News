@@ -27,7 +27,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements LoaderCallbacks <List <String[]>> {
 
     private static final String LOG_TAG = MainActivity.class.getName();
-    private static final String USGS_REQUEST_URL = "https://content.guardianapis.com/search?tag=politics%2Fpolitics&from-date=2017-01-01&page-size=30&show-tags=contributor&q=debate&api-key=" + BuildConfig.API_Key;
+    private static final String USGS_REQUEST_URL = "https://content.guardianapis.com/search?tag=politics%2Fpolitics&from-date=2017-01-01&page-size=20&show-tags=contributor&q=debate&api-key=" + BuildConfig.API_Key;
     ListView listView;
     private ArrayAdapter <String[]> adapter;
     private ProgressBar progressBar;
@@ -55,8 +55,8 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks <
                         String[] currentString = newsList.get( position );
                         TextView textView1 = convertView.findViewById( android.R.id.text1 );
                         TextView textView2 = convertView.findViewById( android.R.id.text2 );
-                        textView1.setTextColor( ContextCompat.getColor( getContext(), R.color.colorAccent ) );
-                        textView2.setTextColor( ContextCompat.getColor( getContext(), R.color.colorPrimary ) );
+                        textView1.setTextColor( ContextCompat.getColor( getContext(), R.color.firsttext ) );
+                        textView2.setTextColor( ContextCompat.getColor( getContext(), R.color.secondtext ) );
                         textView1.setText( currentString[0] );
                         textView2.setText( currentString[1] );
                         return convertView;
@@ -107,4 +107,5 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks <
         error.setVisibility( View.GONE );
         adapter.clear();
     }
+
 }
