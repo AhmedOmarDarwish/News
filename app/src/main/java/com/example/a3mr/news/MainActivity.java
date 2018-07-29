@@ -4,14 +4,19 @@ import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -27,7 +32,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements LoaderCallbacks <List <String[]>> {
 
     private static final String LOG_TAG = MainActivity.class.getName();
-    private static final String USGS_REQUEST_URL = "https://content.guardianapis.com/search?tag=politics%2Fpolitics&from-date=2017-01-01&page-size=20&show-tags=contributor&q=debate&api-key=" + BuildConfig.API_Key;
+    private static final String USGS_REQUEST_URL = "https://content.guardianapis.com/search?tag=politics%2Fpolitics"; // BuildConfig.API_Key;
     ListView listView;
     private ArrayAdapter <String[]> adapter;
     private ProgressBar progressBar;
@@ -84,17 +89,52 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks <
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate( R.menu.main, menu );
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_settings) {
+            Intent settingsIntent = new Intent( this, SettingsActivity.class );
+            startActivity( settingsIntent );
+            return true;
+        }
+        return super.onOptionsItemSelected( item );
+    }
 
     @Override
     public Loader <List <String[]>> onCreateLoader(int i, Bundle bundle) {
-        return new NewsLoader( MainActivity.this, USGS_REQUEST_URL );
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences( this );
+        String pageSize = sharedPref.getString(
+                getString( R.string.page_size_key ),
+                getString( R.string.page_size_default ) );
+        String orderBy = sharedPref.getString(
+                getString( R.string.order_by_key ),
+                getString( R.string.order_by_default ) );
+        String showtags = sharedPref.getString(
+                "show-tags",
+                "contributor" );
+        String q = sharedPref.getString(
+                "q",
+                "contributor" );
+        Uri uri = Uri.parse( USGS_REQUEST_URL );
+        Uri.Builder uriBuilder = uri.buildUpon();
+        uriBuilder.appendQueryParameter( "page-size", pageSize );
+        uriBuilder.appendQueryParameter( "order-by", orderBy );
+        uriBuilder.appendQueryParameter( "show-tags", showtags );
+        uriBuilder.appendQueryParameter( "q", q );
+        uriBuilder.appendQueryParameter( "api-key", BuildConfig.API_Key );
+        Log.e( "url", uriBuilder.toString() );
+        return new NewsLoader( MainActivity.this, uriBuilder.toString()  );
     }
 
     @Override
     public void onLoadFinished(Loader <List <String[]>> loader, List <String[]> strings) {
         error.setText( R.string.no_news );
-        progressBar.setVisibility( View.GONE );
-        adapter.clear();
         if (strings != null && !strings.isEmpty()) {
             error.setVisibility( View.GONE );
             adapter.addAll( strings );
@@ -107,5 +147,6 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks <
         error.setVisibility( View.GONE );
         adapter.clear();
     }
+
 
 }

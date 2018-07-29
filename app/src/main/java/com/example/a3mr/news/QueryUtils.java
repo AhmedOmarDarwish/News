@@ -37,6 +37,7 @@ public final class QueryUtils {
         String jsonResponse = null;
         try {
             jsonResponse = makeHttpRequest( url );
+
         } catch (IOException e) {
             Log.e( LOG_TAG, "Problem making the HTTP request.", e );
         }
@@ -132,7 +133,6 @@ public final class QueryUtils {
             JSONObject baseJsonResponse = new JSONObject( newsJSON );
             JSONObject jsonObject = baseJsonResponse.getJSONObject( "response" );
             JSONArray results = jsonObject.optJSONArray( "results" );
-
             for (int i = 0; i < results.length(); i++) {
                 JSONObject currentNews = results.getJSONObject( i );
                 String webTitle2 = "";
@@ -144,20 +144,17 @@ public final class QueryUtils {
                     String[] parts = originaldate.split( "T" );
                     splitdate = parts[0];
                 }
-                JSONArray tags = currentNews.getJSONArray( "tags" );
-
+               JSONArray tags = currentNews.getJSONArray( "tags" );
                 if (tags.optJSONObject( 0 ) != null) {
-                    JSONObject tagsObject = tags.getJSONObject( 0 );
-                    webTitle2 = " ( " + tagsObject.getString( "webTitle" ) + " ) ";
+                 JSONObject tagsObject = tags.getJSONObject( 0 );
+                   webTitle2 = " ( " + tagsObject.getString( "webTitle" ) + " ) ";
                 }
-                String pageURL = currentNews.getString( "webUrl" );
+               String pageURL = currentNews.getString( "webUrl" );
                 news.add( new String[]{firstString + (webTitle2 + "\r" + "\"" + splitdate + "\""), secondString, pageURL} );
             }
-
         } catch (JSONException e) {
             Log.e( "QueryUtils", "Problem parsing the news JSON results", e );
         }
-
         return news;
     }
 
